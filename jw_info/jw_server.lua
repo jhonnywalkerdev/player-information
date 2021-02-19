@@ -8,7 +8,7 @@ vRP.prepare("vRP/identifier_byuserid","SELECT identifier FROM vrp_user_ids WHERE
 RegisterCommand('info',function(source,args,rawCommand)
 	local user_id = vRP.getUserId(source)
 	local player = vRP.getUserSource(user_id)
-	local nuser_id = tonumber(args[1])
+	local nuser_id = parseInt(args[1])
 	local tplayer = vRP.getUserSource(nuser_id)
 	if tplayer == nil then
 		TriggerClientEvent("Notify",source,"aviso","Passaporte <b>"..vRP.format(args[1]).."</b> indisponível no momento.")
@@ -16,7 +16,7 @@ RegisterCommand('info',function(source,args,rawCommand)
 	end
 	if nuser_id and vRP.hasPermission(user_id,"admin.permissao") then
 		local ped = GetPlayerPed(tplayer)
-		local tidentity = vRP.getUserIdentity(tplayer)    
+		local tidentity = vRP.getUserIdentity(nuser_id)    
 		local ping = GetPlayerPing(tplayer)
 		local name = GetPlayerName(tplayer)
 		local job = vRP.getUserGroupByType(tplayer,"job") or "Desempregado"
@@ -35,9 +35,10 @@ RegisterCommand('info',function(source,args,rawCommand)
 end)
 
 RegisterCommand('info2',function(source,args,rawCommand)
-    local user_id = vRP.getUserId(source)
-	local rows = vRP.query("vRP/userid_byidentifier",{ identifier = args[1] })
+	local rows = vRP.query("vRP/userid_byidentifier",{ identifier = tostring(args[1]) })
 	local idtf = json.encode(rows)
 	print(idtf)
-    TriggerClientEvent("chatMessage",source, "", { 255, 255, 255 }, "ID: "..idtf)
+	if source ~= 0 then
+		TriggerClientEvent("chatMessage",source, "", { 255, 255, 255 }, "ID: "..idtf)
+	end
 end)
